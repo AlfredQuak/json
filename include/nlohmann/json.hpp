@@ -4947,8 +4947,15 @@ class basic_json
 
             case value_t::array:
             {
-                // delegate call to array_t::empty()
-                return m_value.array->empty();
+#ifdef __linux__
+				if ( !m_value.array->empty() && m_value.array->size() == 1 )
+				{
+					return m_value.array[0].at( 0 ).size() <= 0;
+				}
+				else return m_value.array->empty();
+#else
+				return m_value.array->empty();
+#endif
             }
 
             case value_t::object:
